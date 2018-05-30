@@ -1,0 +1,154 @@
+int led = 13;
+int AIN1 = 7;
+int AIN2 = 8;
+int BIN1 = 9;
+int BIN2 = 10;
+
+#include <IRremote.h>
+int RECV_PIN = 4;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup() {
+  pinMode(led, OUTPUT);
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
+  pinMode(BIN1, OUTPUT);
+  pinMode(BIN2, OUTPUT);
+  Serial.begin(19200);
+  irrecv.enableIRIn();
+
+}
+
+void forward() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+}
+
+void backward() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+}
+
+void right() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+}
+
+void left() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+}
+
+void stop() {
+  digitalWrite(led, LOW);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, LOW);
+
+}
+void loop() {
+  if (irrecv.decode(&results)) {
+    irrecv.resume();
+
+    if (results.value == 0xFF18E7) {
+      Serial.println("Button Up");
+      forward();
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF4AB5) {
+      Serial.println("Button Down");
+      backward();
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF10EF) {
+      Serial.println("Button Left");
+      left();
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF5AA5) {
+      Serial.println("Button Right");
+      right();
+      delay(1500);
+      stop();
+    }
+    if (results.value == 0xFF38C7) {
+      Serial.println("Button OK");
+      forward();
+      delay(800);
+      backward();
+      delay(800);
+      forward();
+      delay(800);
+      backward();
+      delay(800);
+      stop();
+
+    }
+    else if (results.value == 0xFFA25D) {
+      Serial.println("Button 1");
+      left();
+      delay(1000);
+      forward();
+      delay(1000);
+      right();
+      delay(1000);
+      forward();
+      delay(1000);
+      stop();
+    }
+    else if (results.value == 0xFF629D) {
+      Serial.println("Button 2");
+      backward();
+      delay(500);
+      forward();
+      delay(500);
+      backward();
+      delay(500);
+      forward();
+      delay(500);
+      stop();
+    }
+    else if (results.value == 0xFFE21D) {
+      Serial.println("Button 3");
+      forward();
+    }
+
+    else if (results.value == 0xFF22DD) {c nhbv 
+      Serial.println("Button 4");
+      backward();
+    }
+    
+    else if (results.value == 0xFFB04F) {
+      Serial.println("Button #");
+      stop();
+    }
+    else {
+      Serial.print("Unrecognized: ");
+      Serial.print(results.value, HEX);
+      Serial.println();
+    }
+
+  }
+}
+
